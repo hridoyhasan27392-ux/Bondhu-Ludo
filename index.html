@@ -2,409 +2,333 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#10152c">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bondhu Ludo</title>
 <style>
-:root {
-  color-scheme: dark;
-  --bg:#10152c; --panel:#1b2341; --text:#f5f7ff;
-  --muted:#aab5d4; --gold:#ffd166; --green:#35d39a;
-}
-* { box-sizing:border-box }
-body {
-  margin:0; min-height:100vh; padding:20px 14px 40px;
-  background:radial-gradient(ellipse at top,#29376a 0,#10152c 58%);
-  color:var(--text); font-family:system-ui,sans-serif;
-}
-main { max-width:520px; margin:auto }
-header { text-align:center; padding:14px 0 22px }
-.logo { font-size:48px; animation:float 2.5s ease-in-out infinite }
-h1 { margin:4px 0; font-size:32px; letter-spacing:-1px }
-h1 span { color:var(--gold) }
-.sub { color:var(--muted); font-size:14px }
-.panel {
-  background:rgba(27,35,65,.96); border:1px solid #354266;
-  border-radius:20px; padding:18px; margin:14px 0;
-  box-shadow:0 12px 32px #0002;
-}
-h2 { font-size:18px; margin:0 0 14px }
-label { display:block; color:var(--muted); font-size:13px; margin:12px 0 6px }
-input {
-  width:100%; padding:14px; border:1px solid #465477;
-  border-radius:12px; background:#111831; color:white;
-  font-size:16px; outline:none;
-}
-input:focus { border-color:var(--gold) }
-button {
-  border:0; border-radius:12px; padding:13px 15px;
-  width:100%; font-weight:750; font-size:15px;
-  cursor:pointer; margin-top:10px; color:#17182b;
-  background:var(--gold);
-}
-button:disabled { opacity:.55; cursor:wait }
-button.secondary { background:#303d63; color:white }
-button.green { background:var(--green) }
-.row { display:flex; gap:9px; align-items:center }
-.row button { flex:1 }
-.hidden { display:none!important }
-.note { color:var(--muted); font-size:13px; line-height:1.6 }
-#status { font-size:13px; color:var(--green); min-height:20px }
-#roomCode {
-  text-align:center; font-size:32px; letter-spacing:6px;
-  color:var(--gold); font-weight:900; padding:12px;
-  border:1px dashed #60709c; border-radius:14px;
-}
-.players { display:grid; grid-template-columns:1fr 1fr; gap:10px }
-.player {
-  display:flex; align-items:center; gap:10px;
-  background:#121a34; border-radius:12px; padding:12px;
-  min-width:0; overflow-wrap:anywhere;
-}
-.dot { width:15px; height:15px; flex-shrink:0; border-radius:50% }
-.empty { opacity:.5; font-size:13px }
-#dice {
-  font-size:76px; text-align:center; padding:12px;
-  filter:drop-shadow(0 5px 12px #0005);
-}
-.roll { animation:roll .55s ease-in-out }
-footer { text-align:center; font-size:12px; color:var(--muted); margin-top:24px }
-@keyframes float { 50% { transform:translateY(-6px) } }
-@keyframes roll {
-  0% { transform:rotate(0) scale(1) }
-  40% { transform:rotate(180deg) scale(1.2) }
-  100% { transform:rotate(360deg) scale(1) }
-}
+*{box-sizing:border-box}
+body{margin:0;background:#101827;color:#fff;font-family:Arial,sans-serif;text-align:center;padding:18px}
+.card{max-width:520px;margin:15px auto;background:#1d293b;padding:20px;border-radius:18px}
+h1{color:#ffd166}
+input,select,button{width:100%;padding:13px;margin:7px 0;border:0;border-radius:10px;font-size:16px}
+button{background:#ffd166;color:#172033;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.4}
+.secondary{background:#34445d;color:white}
+#status{color:#8be9fd;white-space:pre-wrap}
+#players{line-height:2}
+#dice{font-size:60px;margin:12px}
+#board{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin-top:18px}
+.cell{aspect-ratio:1;border-radius:9px;background:#34445d;display:flex;align-items:center;justify-content:center;font-size:25px}
+.red{background:#e74c3c}.green{background:#27ae60}
+.yellow{background:#f1c40f;color:#222}.blue{background:#3498db}
+.hidden{display:none}
 </style>
 </head>
 <body>
-<main>
-<header>
-  <div class="logo">🎲</div>
-  <h1>Bondhu <span>Ludo</span></h1>
-  <div class="sub">বন্ধুদের সঙ্গে, নিজের রুমে ❤️</div>
-</header>
+<h1>🎲 Bondhu Ludo</h1>
+<p>বন্ধুদের সঙ্গে অনলাইন লুডু</p>
 
-<section class="panel" id="loginPanel">
-  <h2>👋 খেলায় প্রবেশ করো</h2>
-  <label for="name">তোমার নাম</label>
-  <input id="name" maxlength="18" placeholder="যেমন: হৃদয়" autocomplete="nickname">
-  <button id="loginBtn">খেলা শুরু করো →</button>
-  <p class="note">অ্যাকাউন্ট বা পাসওয়ার্ড লাগবে না। Firebase তোমার জন্য অতিথি পরিচয় তৈরি করবে।</p>
+<section class="card" id="lobby">
+<h2>খেলায় প্রবেশ করো</h2>
+<input id="name" maxlength="20" placeholder="তোমার নাম লিখো">
+<label for="limit">কতজন খেলবে?</label>
+<select id="limit">
+<option value="2">২ জন</option>
+<option value="3">৩ জন</option>
+<option value="4" selected>৪ জন</option>
+</select>
+<button id="create">নতুন রুম তৈরি করো</button>
+<hr>
+<input id="code" maxlength="6" placeholder="রুম কোড লিখো">
+<button class="secondary" id="join">রুমে যোগ দাও</button>
+<p id="status">Firebase সংযোগ হচ্ছে...</p>
 </section>
 
-<section class="panel hidden" id="lobby">
-  <h2>🏠 লুডু লবি</h2>
-  <p id="welcome" class="note"></p>
-  <button id="createBtn" class="green">＋ নতুন রুম তৈরি করো</button>
-  <label for="joinCode">বন্ধুর রুম কোড</label>
-  <input id="joinCode" maxlength="6" placeholder="৬ অক্ষরের কোড" autocapitalize="characters">
-  <button id="joinBtn" class="secondary">রুমে যোগ দাও</button>
-  <p class="note">একটি রুমে সর্বোচ্চ ৪ জন খেলতে পারবে। বন্ধুকে কোডটি আলাদা করে পাঠাও।</p>
+<section class="card hidden" id="room">
+<h2>তোমার রুম</h2>
+<p>রুম কোড: <strong id="roomCode"></strong></p>
+<button class="secondary" id="copy">রুম কোড কপি করো</button>
+<p>খেলোয়াড়:</p>
+<div id="players"></div>
+<button id="start">খেলা শুরু করো</button>
+<button class="secondary" id="leave">রুম ছেড়ে যাও</button>
 </section>
 
-<section class="panel hidden" id="roomPanel">
-  <h2>🎮 তোমাদের রুম</h2>
-  <p class="note">বন্ধুদের এই কোড পাঠাও:</p>
-  <div id="roomCode">------</div>
-  <div class="row">
-    <button id="copyBtn" class="secondary">📋 কোড কপি</button>
-    <button id="soundBtn" class="secondary">🔊 সাউন্ড চালু</button>
-  </div>
-  <p id="roomStatus" class="note">খেলোয়াড়দের অপেক্ষায়...</p>
-  <h2>👥 খেলোয়াড় <span id="playerCount">0/4</span></h2>
-  <div class="players" id="players"></div>
-  <div id="gamePreview" class="hidden">
-    <div id="dice">🎲</div>
-    <button id="rollBtn">🎲 পাশা ঘোরাও (ডেমো)</button>
-    <p class="note">এটি শুধু অ্যানিমেশন ডেমো; পাশার ফল এখনো গুটির চালের সঙ্গে যুক্ত নয়।</p>
-  </div>
-  <button id="startBtn" class="green">খেলার প্রস্তুতি দেখো</button>
-  <button id="leaveBtn" class="secondary">রুম ছেড়ে বের হও</button>
+<section class="card hidden" id="game">
+<h2>🎲 লুডু খেলা</h2>
+<p id="turn"></p>
+<div id="dice">⚀</div>
+<button id="roll">পাশা চালাও</button>
+<div id="board"></div>
+<p id="gameStatus"></p>
+<button class="secondary" id="exitGame">রুম ছেড়ে যাও</button>
 </section>
-
-<p id="status" role="status" aria-live="polite">Firebase সংযোগের অপেক্ষায়...</p>
-<footer>Bondhu Ludo • বন্ধুদের আড্ডা, একসঙ্গে খেলা 🎉</footer>
-</main>
 
 <script type="module">
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, signInAnonymously, onAuthStateChanged }
+from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getDatabase, ref, get, set, update, onValue, remove }
+from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
 import { firebaseConfig } from "./firebase-config.js";
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import {
-  getAuth, signInAnonymously, onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import {
-  getDatabase, ref, get, set, onValue, remove
-} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+let uid = null;
+let roomCode = "";
+let roomData = null;
+let gameData = null;
+let diceValue = 1;
+let unsubscribeRoom = null;
+let unsubscribeGame = null;
 
 const $ = id => document.getElementById(id);
-const COLORS = [
-  {name:"লাল", hex:"#ff5b68"},
-  {name:"নীল", hex:"#55a5ff"},
-  {name:"সবুজ", hex:"#35d39a"},
-  {name:"হলুদ", hex:"#ffd166"}
-];
+const show = id => $(id).classList.remove("hidden");
+const hide = id => $(id).classList.add("hidden");
+const say = message => $("status").textContent = message;
 
-let app, auth, db, user = null, currentRoom = null;
-let roomListener = null, soundOn = true, audioCtx = null;
-let busy = false;
+signInAnonymously(auth).catch(error => {
+  say("লগইন সমস্যা: " + error.message);
+});
 
-function message(text, error=false) {
-  $("status").textContent = text;
-  $("status").style.color = error ? "#ff8b94" : "#35d39a";
+onAuthStateChanged(auth, user => {
+  if (user) {
+    uid = user.uid;
+    say("সংযোগ হয়েছে। নিজের নাম লিখে রুম তৈরি করো।");
+  }
+});
+
+function getName() {
+  return $("name").value.trim().slice(0,20) || "বন্ধু";
 }
-function show(id, yes=true) {
-  $(id).classList.toggle("hidden", !yes);
-}
-function cleanName(s) {
-  return s.trim().replace(/\s+/g," ").slice(0,18);
-}
-function randomCode() {
+
+function makeCode() {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  const bytes = crypto.getRandomValues(new Uint8Array(6));
-  return Array.from(bytes, b => chars[b % chars.length]).join("");
+  let result = "";
+  for(let i=0;i<6;i++)
+    result += chars[Math.floor(Math.random()*chars.length)];
+  return result;
 }
-function beep(freq=540, duration=.09) {
-  if (!soundOn) return;
+
+$("create").onclick = async () => {
+  if(!uid) return say("লগইন হচ্ছে, একটু অপেক্ষা করো।");
   try {
-    audioCtx ??= new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === "suspended") audioCtx.resume();
-    const oscillator = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    oscillator.type = "sine";
-    oscillator.frequency.value = freq;
-    gain.gain.setValueAtTime(.09, audioCtx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(.001, audioCtx.currentTime + duration);
-    oscillator.connect(gain);
-    gain.connect(audioCtx.destination);
-    oscillator.start();
-    oscillator.stop(audioCtx.currentTime + duration);
-  } catch (_) {}
-}
-function lockButtons(locked) {
-  busy = locked;
-  ["loginBtn","createBtn","joinBtn","leaveBtn"].forEach(id => {
-    $(id).disabled = locked;
+    const limit = Number($("limit").value);
+    let code = makeCode();
+    while((await get(ref(db,"rooms/"+code))).exists())
+      code = makeCode();
+
+    const data = {
+      hostUid:uid,
+      status:"waiting",
+      maxPlayers:limit,
+      createdAt:Date.now(),
+      players:{
+        [uid]:{name:getName(),seat:0,joinedAt:Date.now()}
+      }
+    };
+    await set(ref(db,"rooms/"+code),data);
+    enterRoom(code);
+  } catch(e) {
+    say("রুম তৈরি হয়নি: "+e.message);
+  }
+};
+
+$("join").onclick = async () => {
+  if(!uid) return say("লগইন হচ্ছে, অপেক্ষা করো।");
+  const code = $("code").value.trim().toUpperCase();
+  if(code.length!==6) return say("সঠিক ৬ অক্ষরের রুম কোড লেখো।");
+  try {
+    const snap = await get(ref(db,"rooms/"+code));
+    if(!snap.exists()) return say("এই রুম পাওয়া যায়নি।");
+    const room = snap.val();
+    if(room.status!=="waiting") return say("এই রুমে খেলা শুরু হয়ে গেছে।");
+    const players = room.players || {};
+    if(!players[uid] && Object.keys(players).length>=room.maxPlayers)
+      return say("রুমটি পূর্ণ হয়ে গেছে।");
+
+    if(!players[uid]) {
+      const used = Object.values(players).map(p=>p.seat);
+      let seat=0;
+      while(used.includes(seat)) seat++;
+      await set(ref(db,`rooms/${code}/players/${uid}`),{
+        name:getName(),seat,joinedAt:Date.now()
+      });
+    }
+    enterRoom(code);
+  } catch(e) {
+    say("রুমে ঢোকা যায়নি: "+e.message);
+  }
+};
+
+function enterRoom(code) {
+  roomCode = code;
+  $("roomCode").textContent = code;
+  $("code").value = "";
+  hide("lobby"); show("room");
+  if(unsubscribeRoom) unsubscribeRoom();
+  unsubscribeRoom = onValue(ref(db,"rooms/"+code),snap=>{
+    if(!snap.exists()) {
+      say("রুমটি মুছে গেছে।");
+      return;
+    }
+    roomData=snap.val();
+    renderRoom();
+    if(roomData.status==="playing") {
+      hide("room"); show("game");
+      watchGame();
+    }
   });
 }
-function escapeHTML(s) {
-  return String(s).replace(/[&<>"']/g, c => ({
+
+function renderRoom() {
+  if(!roomData) return;
+  const players=Object.entries(roomData.players||{})
+    .sort((a,b)=>a[1].seat-b[1].seat);
+  $("players").innerHTML=players.map(([id,p])=>
+    `<div>${escapeHtml(p.name)} ${id===roomData.hostUid?"👑":""}</div>`
+  ).join("");
+  $("start").disabled=uid!==roomData.hostUid ||
+    players.length!==roomData.maxPlayers;
+  $("start").textContent=players.length===roomData.maxPlayers
+    ?"খেলা শুরু করো":"খেলোয়াড় পূর্ণ হলে শুরু হবে";
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g,c=>({
     "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
   })[c]);
 }
-function watchRoom(code) {
-  if (roomListener && currentRoom) {
-    // Unsubscribe from the previous room listener.
-    roomListener();
-    roomListener = null;
+
+$("copy").onclick=async()=>{
+  try {
+    await navigator.clipboard.writeText(roomCode);
+    $("copy").textContent="কপি হয়েছে!";
+  } catch {
+    say("রুম কোডটি হাতে কপি করো: "+roomCode);
   }
-  currentRoom = code;
-  $("roomCode").textContent = code;
-  show("lobby", false);
-  show("roomPanel", true);
-  roomListener = onValue(ref(db, "rooms/" + code), snapshot => {
-    const room = snapshot.val();
-    if (!room) {
-      currentRoom = null;
-      if (roomListener) roomListener();
-      roomListener = null;
-      show("roomPanel", false);
-      show("lobby", true);
-      message("রুমটি আর নেই। নতুন রুম তৈরি করো।", true);
-      return;
-    }
-    const players = Object.entries(room.players || {});
-    $("playerCount").textContent = players.length + "/4";
-    $("players").innerHTML = "";
-    for (const [uid, player] of players) {
-      const color = COLORS[player.seat] || COLORS[0];
-      const div = document.createElement("div");
-      div.className = "player";
-      div.innerHTML =
-        '<span class="dot" style="background:'+color.hex+'"></span>' +
-        '<span>'+escapeHTML(player.name) +
-        (uid === room.hostUid ? ' 👑' : '')+'</span>';
-      $("players").appendChild(div);
-    }
-    for (let i=players.length; i<4; i++) {
-      const div = document.createElement("div");
-      div.className = "player empty";
-      div.textContent = "＋ খেলোয়াড়ের অপেক্ষায়";
-      $("players").appendChild(div);
-    }
-    $("roomStatus").textContent = room.status === "playing"
-      ? "খেলা শুরু হয়েছে"
-      : players.length === 4 ? "সব আসন পূর্ণ!" : "আরও বন্ধুদের অপেক্ষায়...";
-    $("startBtn").disabled = !(room.hostUid === user.uid && players.length === 4);
-    message("রুম সংযুক্ত • "+players.length+"/4 জন");
-  }, error => {
-    message("রুম পড়া যায়নি: " + error.message, true);
+};
+
+$("start").onclick=async()=>{
+  if(!roomData || uid!==roomData.hostUid) return;
+  const players=Object.entries(roomData.players||{})
+    .sort((a,b)=>a[1].seat-b[1].seat);
+  if(players.length!==roomData.maxPlayers)
+    return say("সব খেলোয়াড়কে আগে যোগ দিতে হবে।");
+
+  const tokens={};
+  players.forEach(([id,p])=>{
+    tokens[id]=[0,0,0,0].map(()=>({steps:-1}));
   });
-}
-async function createRoom() {
-  if (busy || !user) return;
-  lockButtons(true);
+  const game={
+    players:players.map(([id,p])=>({
+      uid:id,name:p.name,seat:p.seat
+    })),
+    tokens,
+    turn:0,
+    dice:0,
+    phase:"roll",
+    winner:null
+  };
   try {
-    const name = cleanName($("name").value);
-    if (!name) throw Error("আগে তোমার নাম লিখো।");
-    let code, roomRef, snap, attempts = 0;
-    do {
-      code = randomCode();
-      roomRef = ref(db, "rooms/" + code);
-      snap = await get(roomRef);
-      attempts++;
-    } while (snap.exists() && attempts < 8);
-    if (snap.exists()) throw Error("রুম তৈরি হয়নি। আবার চেষ্টা করো।");
-    await set(roomRef, {
-      hostUid: user.uid,
-      status: "waiting",
-      createdAt: Date.now(),
-      players: {
-        [user.uid]: { name, seat: 0, joinedAt: Date.now() }
-      }
-    });
-    $("welcome").textContent = "স্বাগতম, " + name + "!";
-    watchRoom(code);
-    beep(700);
-  } catch (e) {
-    message("রুম তৈরি করা যায়নি: " + e.message, true);
-  } finally {
-    lockButtons(false);
+    await update(ref(db,"rooms/"+roomCode),{status:"playing"});
+    await set(ref(db,"rooms/"+roomCode+"/game"),game);
+  } catch(e) {
+    say("খেলা শুরু হয়নি: "+e.message);
   }
-}
-async function joinRoom() {
-  if (busy || !user) return;
-  lockButtons(true);
-  try {
-    const name = cleanName($("name").value);
-    const code = $("joinCode").value.trim().toUpperCase();
-    if (!name) throw Error("আগে তোমার নাম লিখো।");
-    if (!/^[A-HJ-NP-Z2-9]{6}$/.test(code))
-      throw Error("রুম কোডটি ৬ অক্ষরের হতে হবে।");
-    const roomRef = ref(db, "rooms/" + code);
-    const snap = await get(roomRef);
-    if (!snap.exists()) throw Error("এই কোডের রুম পাওয়া যায়নি।");
-    const room = snap.val();
-    const players = Object.entries(room.players || {});
-    if (room.status !== "waiting") throw Error("এই রুমে খেলা শুরু হয়ে গেছে।");
-    if (players.some(([uid]) => uid === user.uid)) {
-      watchRoom(code);
-      return;
-    }
-    if (players.length >= 4) throw Error("রুমে ইতিমধ্যে ৪ জন আছে।");
-    const seatUsed = players.map(([,p]) => p.seat);
-    const seat = [0,1,2,3].find(n => !seatUsed.includes(n));
-    await set(ref(db, "rooms/" + code + "/players/" + user.uid), {
-      name, seat, joinedAt: Date.now()
-    });
-    $("welcome").textContent = "স্বাগতম, " + name + "!";
-    watchRoom(code);
-    beep(620);
-  } catch (e) {
-    message("রুমে যোগ দেওয়া যায়নি: " + e.message, true);
-  } finally {
-    lockButtons(false);
-  }
-}
-async function leaveRoom() {
-  if (!currentRoom || !user || busy) return;
-  lockButtons(true);
-  const code = currentRoom;
-  try {
-    const roomRef = ref(db, "rooms/" + code);
-    const snap = await get(roomRef);
-    if (snap.exists()) {
-      const room = snap.val();
-      if (room.hostUid === user.uid) {
-        await remove(roomRef);
-      } else {
-        await remove(ref(db, "rooms/" + code + "/players/" + user.uid));
-      }
-    }
-    if (roomListener) roomListener();
-    roomListener = null;
-    currentRoom = null;
-    show("roomPanel", false);
-    show("lobby", true);
-    show("gamePreview", false);
-    message("রুম থেকে বের হয়েছ।");
-  } catch (e) {
-    message("রুম ছাড়া যায়নি: " + e.message, true);
-  } finally {
-    lockButtons(false);
-  }
+};
+
+function watchGame() {
+  if(unsubscribeGame) return;
+  unsubscribeGame=onValue(ref(db,"rooms/"+roomCode+"/game"),snap=>{
+    if(!snap.exists()) return;
+    gameData=snap.val();
+    renderGame();
+  });
 }
 
-$("loginBtn").addEventListener("click", async () => {
-  if (busy) return;
-  const name = cleanName($("name").value);
-  if (!name) {
-    message("আগে তোমার নাম লিখো।", true);
-    $("name").focus();
-    return;
-  }
-  if (!user) {
-    message("Firebase অতিথি লগইনের অপেক্ষায়...");
-    return;
-  }
-  $("name").value = name;
-  $("welcome").textContent = "স্বাগতম, " + name + "!";
-  show("loginPanel", false);
-  show("lobby", true);
-  message("লগইন সফল হয়েছে!");
-  beep(600);
-});
-$("createBtn").addEventListener("click", createRoom);
-$("joinBtn").addEventListener("click", joinRoom);
-$("leaveBtn").addEventListener("click", leaveRoom);
-$("joinCode").addEventListener("input", e => {
-  e.target.value = e.target.value.toUpperCase().replace(/[^A-HJ-NP-Z2-9]/g,"").slice(0,6);
-});
-$("copyBtn").addEventListener("click", async () => {
-  try {
-    await navigator.clipboard.writeText(currentRoom);
-    message("রুম কোড কপি হয়েছে!");
-  } catch (_) {
-    message("রুম কোডটি হাতে কপি করো: " + currentRoom);
-  }
-});
-$("soundBtn").addEventListener("click", () => {
-  soundOn = !soundOn;
-  $("soundBtn").textContent = soundOn ? "🔊 সাউন্ড চালু" : "🔇 সাউন্ড বন্ধ";
-  if (soundOn) beep();
-});
-$("rollBtn").addEventListener("click", () => {
-  const dice = $("dice");
-  dice.classList.remove("roll");
-  void dice.offsetWidth;
-  dice.classList.add("roll");
-  dice.textContent = ["⚀","⚁","⚂","⚃","⚄","⚅"][Math.floor(Math.random()*6)];
-  beep(420 + Math.random()*400, .13);
-});
-$("startBtn").addEventListener("click", () => {
-  message("রুম প্রস্তুত! আসল লুডুর চাল পরের ধাপে যুক্ত করব।");
-  show("gamePreview", true);
-  $("gamePreview").scrollIntoView({behavior:"smooth",block:"center"});
-});
-try {
-  app = initializeApp(firebaseConfig);
-  auth = getAuth(app);
-  db = getDatabase(app);
-  onAuthStateChanged(auth, async currentUser => {
-    if (currentUser) {
-      user = currentUser;
-      message("Firebase সংযোগ হয়েছে। নাম লিখে প্রবেশ করো।");
+/* প্রাথমিক পরীক্ষামূলক বোর্ড */
+function renderGame() {
+  if(!gameData) return;
+  const players=gameData.players||[];
+  const current=players[gameData.turn];
+  $("turn").textContent=gameData.winner
+    ? "বিজয়ী: "+gameData.winner
+    : "এখন চাল: "+(current?.name||"");
+  $("dice").textContent=["","⚀","⚁","⚂","⚃","⚄","⚅"][gameData.dice||1];
+  $("roll").disabled=!current || current.uid!==uid ||
+    gameData.phase!=="roll" || !!gameData.winner;
+
+  const colors=["red","green","yellow","blue"];
+  $("board").innerHTML="";
+  for(let i=0;i<25;i++) {
+    const cell=document.createElement("div");
+    cell.className="cell";
+    const here=[];
+    players.forEach((p,index)=>{
+      (gameData.tokens[p.uid]||[]).forEach((t,j)=>{
+        if(t.steps===i) here.push({index,j});
+      });
+    });
+    if(here.length) {
+      const piece=here[0];
+      cell.classList.add(colors[piece.index%4]);
+      cell.textContent="●";
     } else {
-      try {
-        await signInAnonymously(auth);
-      } catch (e) {
-        message("অতিথি লগইন ব্যর্থ: " + e.message, true);
+      cell.textContent="";
+    }
+    $("board").appendChild(cell);
+  }
+  $("gameStatus").textContent=
+    "এটি প্রাথমিক অনলাইন ডেমো। পূর্ণ লুডুর পথ ও ঘুঁটি চালানোর নিয়ম পরবর্তী ধাপে যোগ করতে হবে।";
+}
+
+$("roll").onclick=async()=>{
+  if(!gameData || gameData.phase!=="roll") return;
+  const current=gameData.players[gameData.turn];
+  if(!current || current.uid!==uid) return;
+  diceValue=Math.floor(Math.random()*6)+1;
+  gameData.dice=diceValue;
+  gameData.phase="move";
+  const next=(gameData.turn+1)%gameData.players.length;
+  gameData.turn=next;
+  gameData.phase="roll";
+  try {
+    await set(ref(db,"rooms/"+roomCode+"/game"),gameData);
+  } catch(e) {
+    $("gameStatus").textContent="সমস্যা: "+e.message;
+  }
+};
+
+async function leaveRoom() {
+  if(!roomCode || !uid) return;
+  try {
+    if(unsubscribeRoom) unsubscribeRoom();
+    if(unsubscribeGame) unsubscribeGame();
+    unsubscribeRoom=null;
+    unsubscribeGame=null;
+    const snap=await get(ref(db,"rooms/"+roomCode));
+    if(snap.exists()) {
+      const room=snap.val();
+      if(room.hostUid===uid) {
+        await remove(ref(db,"rooms/"+roomCode));
+      } else {
+        await remove(ref(db,`rooms/${roomCode}/players/${uid}`));
       }
     }
-  });
-} catch (e) {
-  message("Firebase Config পরীক্ষা করো: " + e.message, true);
+  } catch(e) {
+    say("রুম ছাড়ার সমস্যা: "+e.message);
+  }
+  roomCode="";
+  roomData=null;
+  gameData=null;
+  hide("room"); hide("game"); show("lobby");
+  say("রুম ছেড়েছ। নতুন রুম তৈরি করতে পারো।");
 }
+$("leave").onclick=leaveRoom;
+$("exitGame").onclick=leaveRoom;
 </script>
 </body>
-</html>
+  </html>
