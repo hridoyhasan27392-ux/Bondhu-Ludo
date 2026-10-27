@@ -2,173 +2,666 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>বন্ধু লুডু — Playable</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#101827">
+<title>Bondhu Ludo</title>
 <style>
-:root{--red:#e53935;--green:#2eaa58;--yellow:#f5c928;--blue:#2878df;--ink:#182033;--bg:#f3f5fb}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans Bengali",sans-serif}
-header{text-align:center;padding:14px 10px 6px}h1{margin:0;font-size:clamp(23px,5vw,34px)}header p{margin:4px 0 10px;color:#596276;font-size:14px}
-.app{max-width:900px;margin:auto;padding:10px;display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
-.toolbar,.status,.playerbar,.panel{background:white;border-radius:16px;padding:12px;box-shadow:0 4px 16px #15203b0d}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center}
-button,select,input{font:inherit;border-radius:10px;border:1px solid #d7dce7;padding:9px 12px;background:#fff;color:var(--ink)}
-button{cursor:pointer;font-weight:650}button:disabled{opacity:.45;cursor:not-allowed}.primary{background:#253b80;color:white;border-color:#253b80}.danger{background:#fff0f0;color:#a31f1f;border-color:#ffd0d0}
-.status{text-align:center;font-weight:700;min-height:48px;display:flex;align-items:center;justify-content:center}
-.players{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-.playerbar{padding:9px;text-align:center;border:2px solid transparent;min-width:0}.playerbar.active{border-color:#253b80;box-shadow:0 0 0 3px #253b8017}.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}.score{font-size:12px;color:#606b7d;margin-top:4px}
-.board-wrap{background:white;padding:10px;border-radius:18px;box-shadow:0 4px 16px #15203b0d}
-#board{width:min(100%,620px);aspect-ratio:1;margin:auto;display:grid;grid-template-columns:repeat(15,1fr);grid-template-rows:repeat(15,1fr);border:2px solid #253044;border-radius:5px;overflow:hidden;background:white;position:relative}
-.cell{border:1px solid #d7dce4;position:relative;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0}
-.home{border:0}.home.red{background:#ef6b68}.home.green{background:#65c987}.home.yellow{background:#f4d65c}.home.blue{background:#6ca5f1}
-.base{position:absolute;inset:14%;border-radius:12px;background:#fff;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:7%;padding:10%}
-.base .nest{border:2px solid #aeb6c5;border-radius:50%;background:#f5f6fa}
-.track{background:#fff}.track.red{background:#efb5b3}.track.green{background:#b8e9c8}.track.yellow{background:#f8e9a5}.track.blue{background:#b7d5fb}
-.start.red{background:var(--red)!important}.start.green{background:var(--green)!important}.start.yellow{background:var(--yellow)!important}.start.blue{background:var(--blue)!important}
-.lane.red{background:#f4a3a1}.lane.green{background:#a4e0b7}.lane.yellow{background:#f5df7b}.lane.blue{background:#9cc4fa}
-.center{grid-column:7/10;grid-row:7/10;background:conic-gradient(from 45deg,var(--green) 0 25%,var(--yellow) 0 50%,var(--blue) 0 75%,var(--red) 0);border:1px solid #fff}
-.token{width:83%;height:83%;border-radius:50%;border:2px solid white;box-shadow:0 1px 4px #0006;display:flex;align-items:center;justify-content:center;color:white;font-size:clamp(8px,1.5vw,13px);font-weight:900;z-index:3;padding:0;line-height:1}
-.token.red{background:var(--red)}.token.green{background:var(--green)}.token.yellow{background:var(--yellow);color:#493900}.token.blue{background:var(--blue)}
-.token.selectable{outline:3px solid #171d2a;outline-offset:1px;animation:pulse .7s infinite alternate}
-@keyframes pulse{to{transform:scale(.85)}}
-.dice-row{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
-.dice{font-size:38px;width:64px;height:64px;display:flex;align-items:center;justify-content:center;border:2px solid #d8deea;border-radius:14px;background:#fff}
-.small{font-size:13px;color:#5d6678}.panels{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.panel h3{margin:0 0 8px;font-size:16px}.panel p{margin:6px 0;font-size:13px;color:#5d6678}.fieldrow{display:flex;gap:7px;flex-wrap:wrap}.fieldrow input{min-width:0;flex:1;width:100px}
-.log{max-height:110px;overflow:auto;font-size:13px;line-height:1.6;color:#4e596d}
-footer{text-align:center;color:#6a7383;font-size:12px;padding:4px 0 16px}
-@media(max-width:520px){.app{padding:7px;gap:8px}.players{grid-template-columns:repeat(2,minmax(0,1fr))}.board-wrap{padding:5px}.toolbar{padding:8px}.panel{padding:10px}.dice{width:54px;height:54px}.token{border-width:1px}}
+:root{--bg:#101827;--panel:#1d293b;--line:#34445d;--red:#ef4444;--green:#22c55e;--yellow:#facc15;--blue:#3b82f6}
+*{box-sizing:border-box}
+body{margin:0;padding:14px;background:var(--bg);color:#f8fafc;font-family:system-ui,Arial,sans-serif;text-align:center}
+h1{margin:6px 0;color:#ffd166;font-size:clamp(25px,7vw,36px)}
+p{line-height:1.5}
+.card{width:min(100%,600px);margin:14px auto;padding:17px;background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 28px #0003}
+input,select,button{font:inherit;border:0;border-radius:11px;padding:12px;width:100%;margin:6px 0}
+input,select{background:#0f172a;color:white;border:1px solid #475569}
+button{background:#ffd166;color:#172033;font-weight:750;cursor:pointer}
+button:disabled{opacity:.4;cursor:not-allowed}
+button.alt{background:#34445d;color:white}
+.small{font-size:13px;color:#cbd5e1}
+.hidden{display:none!important}
+#status{white-space:pre-wrap;color:#93c5fd;overflow-wrap:anywhere}
+#players{display:grid;gap:6px}
+.player{padding:8px;border-radius:9px;background:#0f172a}
+#boardWrap{width:min(94vw,510px);margin:12px auto}
+#board{display:grid;grid-template-columns:repeat(15,minmax(0,1fr));grid-template-rows:repeat(15,minmax(0,1fr));gap:1px;aspect-ratio:1;background:#64748b;border:2px solid #cbd5e1;border-radius:5px;overflow:hidden}
+.cell{position:relative;min-width:0;min-height:0;background:#f8fafc;color:#0f172a;display:flex;align-items:center;justify-content:center;font-size:clamp(7px,2vw,15px)}
+.cell.empty{background:#e2e8f0}
+.cell.track{background:#fff}
+.cell.safe:after{content:"★";color:#64748b;font-size:clamp(7px,2vw,13px);position:absolute;z-index:1;pointer-events:none}
+.cell.redhome{background:#fecaca}
+.cell.greenhome{background:#bbf7d0}
+.cell.yellowhome{background:#fef08a}
+.cell.bluehome{background:#bfdbfe}
+.cell.redlane{background:#ef4444}
+.cell.greenlane{background:#22c55e}
+.cell.yellowlane{background:#facc15}
+.cell.bluelane{background:#3b82f6}
+.cell.center{background:conic-gradient(var(--green) 0 25%,var(--yellow) 0 50%,var(--blue) 0 75%,var(--red) 0)}
+.token{position:relative;inset:auto;border:1px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:clamp(8px,2.6vw,16px);font-weight:900;color:white;text-shadow:0 1px 2px #000;background:#334155;padding:0;z-index:2;box-shadow:0 1px 3px #0008;margin:0;min-width:0;min-height:0;width:100%;height:100%}
+.token.red{background:var(--red)}
+.token.green{background:var(--green)}
+.token.yellow{background:#ca8a04}
+.token.blue{background:var(--blue)}
+.token.mine{outline:2px solid #111827;outline-offset:-3px}
+#dice{font-size:54px;margin:5px}
+#turn{font-weight:800;font-size:18px}
+#tokenChoices{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+#tokenChoices button{padding:9px 3px}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mode-grid button{min-height:76px}
+@media(min-width:600px){body{padding:22px}}
 </style>
 </head>
 <body>
-<header><h1>🎲 বন্ধু লুডু</h1><p>একই ফোনে ২–৪ জন খেলুন, অথবা রুম কোড দিয়ে অনলাইনে খেলুন</p></header>
-<main class="app">
-  <div class="toolbar">
-    <label>খেলোয়াড় <select id="playerCount"><option value="2">২ জন</option><option value="3">৩ জন</option><option value="4" selected>৪ জন</option></select></label>
-    <button id="newGame" class="primary">নতুন গেম</button>
-    <button id="rollBtn" class="primary">🎲 পাশা ফেলুন</button>
-    <button id="resetBtn" class="danger">রিসেট</button>
-  </div>
-  <div class="status" id="status">নতুন গেম শুরু করতে “নতুন গেম” চাপুন।</div>
-  <div class="players" id="players"></div>
-  <div class="board-wrap"><div id="board" aria-label="Ludo board"></div></div>
-  <div class="dice-row"><div class="dice" id="dice">⚀</div><div><b id="turnLabel">আপনার পালা</b><div class="small" id="hint">পাশা ফেলুন। ৬ উঠলে ঘুঁটি বের হবে।</div></div></div>
-  <div class="panels">
-    <section class="panel"><h3>🌐 অনলাইন গেম</h3><p>অনলাইন খেলার জন্য Firebase Authentication-এ Anonymous sign-in এবং Realtime Database চালু থাকতে হবে।</p>
-      <div class="fieldrow"><button id="createRoom" class="primary">রুম তৈরি</button><input id="roomInput" placeholder="রুম কোড"><button id="joinRoom">রুমে যোগ</button></div>
-      <p id="roomStatus">এখন লোকাল গেম মোড।</p><button id="leaveRoom">অনলাইন রুম ছাড়ুন</button>
-    </section>
-    <section class="panel"><h3>📜 খেলার নিয়ম / লগ</h3><div class="log" id="log">• নতুন গেম শুরু করুন।<br>• ৬ উঠলে ঘুঁটি বের হবে।<br>• ঘুঁটি চালাতে পাশা ফেলার পর হাইলাইট হওয়া ঘুঁটিতে চাপ দিন।</div></section>
-  </div>
-  <footer>বন্ধু লুডু • Single-file HTML • Firebase online mode</footer>
-</main>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getDatabase, ref, set, get, onValue, runTransaction, remove } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAT3PSBCd_Q8Jyt12ftXZHKxKfv-Tqbac8",
-  authDomain: "bondu-76832.firebaseapp.com",
-  databaseURL: "https://bondu-76832-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "bondu-76832",
-  storageBucket: "bondu-76832.firebasestorage.app",
-  messagingSenderId: "555570222559",
-  appId: "1:555570222559:web:ce6ddf9f90b43d9412606a"
+<h1>🎲 Bondhu Ludo</h1>
+<p>বন্ধুদের সঙ্গে অনলাইন ও অফলাইন লুডু</p>
+
+<section class="card" id="lobby">
+<h2>খেলার ধরন বেছে নাও</h2>
+
+<div class="mode-grid">
+<button id="offlineMode">📱 অফলাইন খেলা<br><small>একই ফোনে ২–৪ জন</small></button>
+<button id="onlineMode" class="alt">🌐 অনলাইন খেলা<br><small>রুম কোড দিয়ে</small></button>
+</div>
+
+<div id="offlineSetup" class="hidden">
+<hr>
+<h3>অফলাইন খেলা তৈরি করো</h3>
+<label for="offlineLimit">খেলোয়াড় সংখ্যা</label>
+<select id="offlineLimit">
+<option value="2">২ জন</option>
+<option value="3">৩ জন</option>
+<option value="4" selected>৪ জন</option>
+</select>
+<div id="offlineNames"></div>
+<button id="startOffline">অফলাইন খেলা শুরু করো</button>
+<p class="small">এই মোডে ইন্টারনেট বা Firebase লাগবে না।</p>
+</div>
+
+<div id="onlineSetup" class="hidden">
+<hr>
+<h3>অনলাইন খেলা</h3>
+<input id="name" maxlength="20" placeholder="তোমার নাম লিখো">
+<label for="limit">খেলোয়াড় সংখ্যা</label>
+<select id="limit">
+<option value="2">২ জন</option>
+<option value="3">৩ জন</option>
+<option value="4" selected>৪ জন</option>
+</select>
+<button id="create">নতুন রুম তৈরি করো</button>
+<hr>
+<input id="code" maxlength="6" placeholder="৬ অক্ষরের রুম কোড">
+<button class="alt" id="join">রুমে যোগ দাও</button>
+<p id="status">অনলাইন খেলতে Firebase কনফিগারেশন প্রয়োজন।</p>
+</div>
+</section>
+
+<section class="card hidden" id="room">
+<h2>রুম প্রস্তুত</h2>
+<p>রুম কোড: <strong id="roomCode"></strong></p>
+<button class="alt" id="copy">রুম কোড কপি করো</button>
+<div id="players"></div>
+<p class="small" id="roomHint"></p>
+<button id="start">খেলা শুরু করো</button>
+<button class="alt" id="leave">রুম ছেড়ে যাও</button>
+</section>
+
+<section class="card hidden" id="game">
+<h2 id="gameHeading">লুডু বোর্ড</h2>
+<p id="turn">চাল লোড হচ্ছে...</p>
+<div id="dice">⚀</div>
+<button id="roll">পাশা চালাও</button>
+<p class="small" id="instruction">পাশা চালাও, তারপর নিজের ঘুঁটি নির্বাচন করো।</p>
+<div id="tokenChoices"></div>
+<div id="boardWrap"><div id="board"></div></div>
+<p id="gameStatus" class="small"></p>
+<button class="alt" id="exitGame">মেনুতে ফিরে যাও</button>
+</section>
+
+<script type="module">
+const $=id=>document.getElementById(id);
+
+const colors=["red","green","yellow","blue"];
+const colorBn=["লাল","সবুজ","হলুদ","নীল"];
+const starts=[0,13,26,39];
+const safeSquares=[0,8,13,21,26,34,39,47];
+
+const track=[
+[6,1],[6,2],[6,3],[6,4],[6,5],[5,6],[4,6],[3,6],[2,6],[1,6],[0,6],[0,7],[0,8],
+[1,8],[2,8],[3,8],[4,8],[5,8],[6,9],[6,10],[6,11],[6,12],[6,13],[6,14],
+[7,14],[8,14],[8,13],[8,12],[8,11],[8,10],[8,9],[9,8],[10,8],[11,8],[12,8],[13,8],[14,8],
+[14,7],[14,6],[13,6],[12,6],[11,6],[10,6],[9,6],[8,5],[8,4],[8,3],[8,2],[8,1],[8,0],
+[7,0],[6,0]
+];
+
+const lanes=[
+[[7,1],[7,2],[7,3],[7,4],[7,5]],
+[[1,7],[2,7],[3,7],[4,7],[5,7]],
+[[7,13],[7,12],[7,11],[7,10],[7,9]],
+[[13,7],[12,7],[11,7],[10,7],[9,7]]
+];
+
+const homeCells=[
+[[1,1],[1,4],[4,1],[4,4]],
+[[1,10],[1,13],[4,10],[4,13]],
+[[10,10],[10,13],[13,10],[13,13]],
+[[10,1],[10,4],[13,1],[13,4]]
+];
+
+let uid=null,roomCode="",roomData=null,gameData=null;
+let unRoom=null,unGame=null,mode="offline";
+let fb=null,fbAuth=null,fbDb=null;
+
+function setStatus(s){$("status").textContent=s}
+function safeName(v){return (String(v||"").trim()||"বন্ধু").slice(0,20)}
+function makeCode(){
+ const c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+ return Array.from({length:6},()=>c[Math.floor(Math.random()*c.length)]).join("");
+}
+function esc(s){
+ return String(s).replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[c]));
+}
+function show(id){$(id).classList.remove("hidden")}
+function hide(id){$(id).classList.add("hidden")}
+
+function offlineNameInputs(){
+ const n=Number($("offlineLimit").value);
+ const defaults=["লাল দল","সবুজ দল","হলুদ দল","নীল দল"];
+ $("offlineNames").innerHTML=Array.from({length:n},(_,i)=>
+  `<input maxlength="20" id="localName${i}" placeholder="খেলোয়াড় ${i+1}-এর নাম" value="${defaults[i]}">`
+ ).join("");
+}
+$("offlineLimit").onchange=offlineNameInputs;
+offlineNameInputs();
+
+$("offlineMode").onclick=()=>{
+ mode="offline";
+ show("offlineSetup");
+ hide("onlineSetup");
 };
-const COLORS=["red","green","yellow","blue"], NAMES={red:"লাল",green:"সবুজ",yellow:"হলুদ",blue:"নীল"};
-const START=[0,13,26,39], SAFE=[0,8,13,21,26,34,39,47];
-const PATH=[[6,1],[6,2],[6,3],[6,4],[6,5],[5,6],[4,6],[3,6],[2,6],[1,6],[0,6],[0,7],[0,8],[1,8],[2,8],[3,8],[4,8],[5,8],[6,9],[6,10],[6,11],[6,12],[6,13],[6,14],[7,14],[8,14],[8,13],[8,12],[8,11],[8,10],[8,9],[9,8],[10,8],[11,8],[12,8],[13,8],[14,8],[14,7],[14,6],[13,6],[12,6],[11,6],[10,6],[9,6],[8,5],[8,4],[8,3],[8,2],[8,1],[8,0],[7,0],[6,0]];
-const LANES={red:[[7,1],[7,2],[7,3],[7,4],[7,5],[7,6]],green:[[1,7],[2,7],[3,7],[4,7],[5,7],[6,7]],yellow:[[7,13],[7,12],[7,11],[7,10],[7,9],[7,8]],blue:[[13,7],[12,7],[11,7],[10,7],[9,7],[8,7]]};
-const BASES={red:[0,0],green:[0,9],yellow:[9,9],blue:[9,0]};
-const board=document.getElementById("board"), statusEl=document.getElementById("status"), playersEl=document.getElementById("players"), diceEl=document.getElementById("dice"), hintEl=document.getElementById("hint"), turnLabel=document.getElementById("turnLabel"), logEl=document.getElementById("log");
-const icons=["⚀","⚁","⚂","⚃","⚄","⚅"];
-let game=null, rolled=null, valid=[], roomCode=null, myUid=null, myColor=null, db=null, auth=null, unsubscribe=null, busy=false;
-const coordKey=(r,c)=>r+","+c;
-const cells=new Map();
-function buildBoard(){
- board.innerHTML="";cells.clear();
- for(let r=0;r<15;r++)for(let c=0;c<15;c++){let el=document.createElement("div");el.className="cell";el.dataset.r=r;el.dataset.c=c;board.appendChild(el);cells.set(coordKey(r,c),el);}
- for(const [color,[r0,c0]] of Object.entries(BASES)){const home=document.createElement("div");home.className="home "+color;home.style.gridRow=(r0+1)+"/span 6";home.style.gridColumn=(c0+1)+"/span 6";const base=document.createElement("div");base.className="base";for(let i=0;i<4;i++){let n=document.createElement("div");n.className="nest";base.appendChild(n)}home.appendChild(base);board.appendChild(home);}
- PATH.forEach(([r,c],i)=>{let el=cells.get(coordKey(r,c));el.classList.add("track");if(i===0)el.classList.add("start","red");if(i===13)el.classList.add("start","green");if(i===26)el.classList.add("start","yellow");if(i===39)el.classList.add("start","blue");if(SAFE.includes(i))el.style.boxShadow="inset 0 0 0 2px #ffffff";});
- Object.entries(LANES).forEach(([color,coords])=>coords.forEach(([r,c])=>cells.get(coordKey(r,c)).classList.add("lane",color)));
- const center=document.createElement("div");center.className="center";board.appendChild(center);
+$("onlineMode").onclick=()=>{
+ mode="online";
+ show("onlineSetup");
+ hide("offlineSetup");
+};
+
+function newGame(players,local){
+ const tokens={};
+ players.forEach(p=>{
+  tokens[p.uid]=[0,1,2,3].map(()=>({progress:-1}));
+ });
+ return {
+  players,tokens,turn:0,dice:1,phase:"roll",
+  winner:null,local,updatedAt:Date.now()
+ };
 }
-function freshGame(count=4){return {players:COLORS.slice(0,count),turn:0,dice:null,rolled:false,winner:null,revision:0,tokens:Object.fromEntries(COLORS.map(c=>[c,[-1,-1,-1,-1]])),last:"গেম শুরু হয়েছে।"}}
-function log(msg){logEl.innerHTML=String(msg).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")+"<br>"+logEl.innerHTML;logEl.innerHTML=logEl.innerHTML.split("<br>").slice(0,18).join("<br>");}
-function current(){return game?.players?.[game.turn]||"red"}
-function setStatus(msg){statusEl.textContent=msg}
-function playerCanAct(){return !roomCode || (myColor===current());}
-function saveLocal(){if(!roomCode)render()}
-function render(){
- if(!game)return;
- playersEl.innerHTML="";
- game.players.forEach((color,i)=>{const p=document.createElement("div");p.className="playerbar "+(i===game.turn?"active":"");p.innerHTML=`<div><span class="dot" style="background:var(--${color})"></span><b>${NAMES[color]}</b>${roomCode&&color===myColor?" (আপনি)":""}</div><div class="score">${game.tokens[color].filter(x=>x===57).length}/4 ঘুঁটি ঘরে</div>`;playersEl.appendChild(p)});
- for(const el of cells.values())el.innerHTML="";
- document.querySelectorAll(".home").forEach(x=>x.remove());
- // recreate home panels above cells
- for(const [color,[r0,c0]] of Object.entries(BASES)){const home=document.createElement("div");home.className="home "+color;home.style.gridRow=(r0+1)+"/span 6";home.style.gridColumn=(c0+1)+"/span 6";const base=document.createElement("div");base.className="base";for(let i=0;i<4;i++){let n=document.createElement("div");n.className="nest";base.appendChild(n)}home.appendChild(base);board.appendChild(home);}
- for(const color of COLORS){game.tokens[color].forEach((pos,idx)=>{let cell=null;if(pos===-1){const [r0,c0]=BASES[color];const rr=r0+[1,1,3,3][idx],cc=c0+[1,3,1,3][idx];cell=cells.get(coordKey(rr,cc));}else if(pos>=0&&pos<=51){let pi=(START[COLORS.indexOf(color)]+pos)%52;const [r,c]=PATH[pi];cell=cells.get(coordKey(r,c));}else if(pos>=52&&pos<=57){const [r,c]=LANES[color][pos-52];cell=cells.get(coordKey(r,c));}
- if(cell){const b=document.createElement("button");b.className="token "+color+(valid.includes(idx)&&color===current()?" selectable":"");b.textContent=idx+1;b.title=NAMES[color]+" "+(idx+1);b.addEventListener("click",()=>moveToken(color,idx));cell.appendChild(b);}});}
- diceEl.textContent=game.dice?icons[game.dice-1]:"⚀";
- turnLabel.textContent=game.winner?NAMES[game.winner]+" জিতেছে!":NAMES[current()]+"-এর পালা";
- hintEl.textContent=game.winner?"নতুন গেম শুরু করে আবার খেলুন।":game.rolled?"চাল দেওয়ার জন্য হাইলাইট করা ঘুঁটিতে চাপ দিন।":"পাশা ফেলুন। ৬ উঠলে ঘুঁটি বের হবে।";
- document.getElementById("rollBtn").disabled=!!game.winner||game.rolled||busy||!playerCanAct();
- if(roomCode){setStatus(game.winner?NAMES[game.winner]+" জয়ী!":`${NAMES[current()]}-এর পালা${playerCanAct()?" — আপনার পালা":" — প্রতিপক্ষের পালা"}`);}
- else setStatus(game.winner?NAMES[game.winner]+" জিতেছে!":`${NAMES[current()]}-এর পালা${game.rolled?" — ঘুঁটি নির্বাচন করুন":" — পাশা ফেলুন"}`);
+
+$("startOffline").onclick=()=>{
+ const n=Number($("offlineLimit").value);
+ const players=[];
+ for(let i=0;i<n;i++){
+  players.push({
+   uid:"local"+i,
+   name:safeName($("localName"+i).value),
+   seat:i
+  });
+ }
+ mode="offline";
+ roomCode="";
+ roomData=null;
+ gameData=newGame(players,true);
+ startGameScreen();
+};
+
+function startGameScreen(){
+ hide("lobby");
+ hide("room");
+ show("game");
+ $("gameHeading").textContent=mode==="offline"?"অফলাইন লুডু":"অনলাইন লুডু";
+ renderGame();
 }
-function legalMoves(color,dice){return game.tokens[color].map((p,i)=>({p,i})).filter(({p})=>p===-1?dice===6:p<57&&p+dice<=57).map(x=>x.i)}
-function nextTurn(extra=false){game.rolled=false;valid=[];if(!extra)game.turn=(game.turn+1)%game.players.length;game.revision=(game.revision||0)+1;game.last=extra?"৬ উঠেছে, আবার পাশা ফেলুন।":NAMES[current()]+"-এর পালা।";rolled=null;persistGame();}
-async function persistGame(){
- render();
- if(roomCode&&db&&!busy){try{await set(ref(db,"rooms/"+roomCode+"/state"),game)}catch(e){setStatus("অনলাইন সেভ হয়নি: "+e.message)}}
-}
-async function rollDice(){
- if(!game||game.winner||game.rolled||busy||!playerCanAct())return;
- const d=Math.floor(Math.random()*6)+1;game.dice=d;game.rolled=true;valid=legalMoves(current(),d);rolled=d;log(NAMES[current()]+" পাশায় "+d+" পেয়েছে।");
- if(valid.length===0){setStatus("চাল দেওয়ার মতো ঘুঁটি নেই।");render();setTimeout(()=>{if(game&&game.rolled&&game.dice===d){nextTurn(d===6)}},900);return}
- await persistGame();
-}
-async function moveToken(color,idx){
- if(!game||!game.rolled||color!==current()||!valid.includes(idx)||busy||!playerCanAct())return;
- busy=true;const d=game.dice;let p=game.tokens[color][idx];p=p===-1?0:p+d;game.tokens[color][idx]=p;
- if(p>=0&&p<=51){const absolute=(START[COLORS.indexOf(color)]+p)%52;if(!SAFE.includes(absolute)){for(const other of game.players){if(other===color)continue;game.tokens[other].forEach((op,oi)=>{if(op>=0&&op<=51&&(START[COLORS.indexOf(other)]+op)%52===absolute){game.tokens[other][oi]=-1;log(NAMES[color]+" প্রতিপক্ষের ঘুঁটি কাটল!");}});}}}
- const finished=game.tokens[color].filter(x=>x===57).length;
- if(finished===4){game.winner=color;game.rolled=false;valid=[];log(NAMES[color]+" জিতেছে! 🎉");}
- else {const extra=d===6||p===57;game.rolled=false;valid=[];if(!extra)game.turn=(game.turn+1)%game.players.length;log(extra?"আবার পাশা ফেলুন।":NAMES[current()]+"-এর পালা।");}
- game.revision=(game.revision||0)+1;game.last="ঘুঁটি চালানো হয়েছে।";busy=false;await persistGame();
-}
-document.getElementById("newGame").addEventListener("click",async()=>{if(roomCode){setStatus("অনলাইন রুমে নতুন গেম শুধু হোস্ট শুরু করতে পারে।");return}game=freshGame(+document.getElementById("playerCount").value);rolled=null;valid=[];log("নতুন গেম শুরু হয়েছে।");await persistGame()});
-document.getElementById("resetBtn").addEventListener("click",async()=>{if(roomCode){setStatus("অনলাইন গেমে রিসেট বন্ধ। রুম ছাড়ুন বা হোস্টকে বলুন।");return}game=freshGame(+document.getElementById("playerCount").value);valid=[];await persistGame();log("গেম রিসেট হয়েছে।")});
-document.getElementById("rollBtn").addEventListener("click",rollDice);
-buildBoard();game=freshGame(4);render();
 
 async function initFirebase(){
- try{const app=initializeApp(firebaseConfig);db=getDatabase(app);auth=getAuth(app);const cred=await signInAnonymously(auth);myUid=cred.user.uid;return true}
- catch(e){setStatus("Firebase সেটআপ সমস্যা: "+e.message+" — লোকাল গেম খেলতে পারবেন।");return false}
+ if(fbDb&&fbAuth&&uid)return true;
+
+ try{
+  const appMod=await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js");
+  const authMod=await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js");
+  const dbMod=await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-database.js");
+  const configMod=await import("./firebase-config.js");
+
+  fb={...appMod,...authMod,...dbMod};
+  const app=fb.initializeApp(configMod.firebaseConfig);
+  fbAuth=fb.getAuth(app);
+  fbDb=fb.getDatabase(app);
+
+  if(fbAuth.currentUser){
+   uid=fbAuth.currentUser.uid;
+   return true;
+  }
+
+  const credential=await fb.signInAnonymously(fbAuth);
+  uid=credential.user.uid;
+  return true;
+
+ }catch(e){
+  setStatus("Firebase সংযোগ হয়নি: "+e.message+" — অফলাইন মোড ব্যবহার করতে পারো।");
+  return false;
+ }
 }
-function genCode(){return Math.random().toString(36).slice(2,7).toUpperCase()}
-async function createRoom(){
+
+function dbref(path){return fb.ref(fbDb,path)}
+
+$("create").onclick=async()=>{
+ setStatus("Firebase-এ সংযোগ হচ্ছে...");
  if(!await initFirebase())return;
- roomCode=genCode();myColor="red";game=freshGame(4);
- game.players=["red"]; // Room participants are added as they join
- try{await set(ref(db,"rooms/"+roomCode),{host:myUid,players:{[myUid]:{color:"red",name:"Player 1"}},state:game});watchRoom();document.getElementById("roomInput").value=roomCode;document.getElementById("roomStatus").textContent="আপনার রুম কোড: "+roomCode+" — বন্ধুদের দিন।";log("অনলাইন রুম তৈরি: "+roomCode);render();}
- catch(e){roomCode=null;setStatus("রুম তৈরি হয়নি: "+e.message)}
+
+ try{
+  let code=makeCode();
+  while((await fb.get(dbref("rooms/"+code))).exists())code=makeCode();
+
+  const maxPlayers=Number($("limit").value);
+  await fb.set(dbref("rooms/"+code),{
+   hostUid:uid,
+   status:"waiting",
+   maxPlayers,
+   createdAt:Date.now(),
+   players:{
+    [uid]:{
+     name:safeName($("name").value),
+     seat:0,
+     joinedAt:Date.now()
+    }
+   }
+  });
+  enterRoom(code);
+ }catch(e){
+  setStatus("রুম তৈরি হয়নি: "+e.message);
+ }
+};
+
+$("join").onclick=async()=>{
+ const code=$("code").value.trim().toUpperCase();
+
+ if(!/^[A-HJ-NP-Z2-9]{6}$/.test(code))
+  return setStatus("৬ অক্ষরের সঠিক রুম কোড লেখো।");
+
+ setStatus("রুম খোঁজা হচ্ছে...");
+ if(!await initFirebase())return;
+
+ try{
+  const snap=await fb.get(dbref("rooms/"+code));
+  if(!snap.exists())return setStatus("রুম পাওয়া যায়নি।");
+
+  const r=snap.val();
+  if(r.status!=="waiting")return setStatus("এই রুমে খেলা শুরু হয়ে গেছে।");
+
+  const ps=r.players||{};
+  if(!ps[uid]){
+   if(Object.keys(ps).length>=r.maxPlayers)return setStatus("রুমটি পূর্ণ।");
+
+   const seats=Object.values(ps).map(p=>p.seat);
+   let seat=0;
+   while(seats.includes(seat))seat++;
+
+   await fb.set(dbref(`rooms/${code}/players/${uid}`),{
+    name:safeName($("name").value),
+    seat,
+    joinedAt:Date.now()
+   });
+  }
+  enterRoom(code);
+ }catch(e){
+  setStatus("রুমে যোগ দেওয়া যায়নি: "+e.message);
+ }
+};
+
+function enterRoom(code){
+ mode="online";
+ roomCode=code;
+ $("roomCode").textContent=code;
+ hide("lobby");
+ show("room");
+
+ if(unRoom)unRoom();
+
+ unRoom=fb.onValue(dbref("rooms/"+code),snap=>{
+  if(!snap.exists()){
+   $("roomHint").textContent="রুমটি আর নেই।";
+   return;
+  }
+
+  roomData=snap.val();
+  renderRoom();
+
+  if(roomData.status==="playing"){
+   hide("room");
+   show("game");
+   $("gameHeading").textContent="অনলাইন লুডু";
+   watchGame();
+  }
+ });
 }
-async function joinRoom(){
- const code=document.getElementById("roomInput").value.trim().toUpperCase();if(!code){setStatus("রুম কোড লিখুন।");return}if(!await initFirebase())return;
- const roomRef=ref(db,"rooms/"+code);const snap=await get(roomRef);if(!snap.exists()){setStatus("এই রুম পাওয়া যায়নি।");return}
- const data=snap.val(), existing=data.players||{}, taken=Object.values(existing).map(p=>p.color);const color=COLORS.find(c=>!taken.includes(c));if(!color){setStatus("রুমে ইতিমধ্যে ৪ জন আছে।");return}
- roomCode=code;myColor=color;
- try{await set(ref(db,`rooms/${code}/players/${myUid}`),{color,name:"Player "+(Object.keys(existing).length+1)});const state=data.state||freshGame();state.players=COLORS.filter(c=>[...taken,color].includes(c));state.tokens=state.tokens||freshGame().tokens;await set(ref(db,`rooms/${code}/state`),state);watchRoom();document.getElementById("roomStatus").textContent="রুম "+code+"-এ যোগ দিয়েছেন ("+NAMES[color]+")";log("অনলাইন রুমে যোগ দিয়েছেন।");}
- catch(e){setStatus("রুমে যোগ দেওয়া যায়নি: "+e.message);roomCode=null}
+
+function renderRoom(){
+ const ps=Object.entries(roomData.players||{}).sort((a,b)=>a[1].seat-b[1].seat);
+
+ $("players").innerHTML=ps.map(([id,p])=>
+  `<div class="player">${colorBn[p.seat]||""} — ${esc(p.name)} ${id===roomData.hostUid?"👑 হোস্ট":""}</div>`
+ ).join("");
+
+ $("roomHint").textContent=`${ps.length}/${roomData.maxPlayers} জন যোগ দিয়েছেন।`;
+ $("start").disabled=uid!==roomData.hostUid||ps.length!==roomData.maxPlayers;
+ $("start").textContent=ps.length===roomData.maxPlayers?"খেলা শুরু করো":"সব খেলোয়াড় যোগ দিলে শুরু হবে";
 }
-function watchRoom(){
- if(unsubscribe)unsubscribe();
- unsubscribe=onValue(ref(db,"rooms/"+roomCode),snap=>{if(!snap.exists()){setStatus("রুম বন্ধ হয়ে গেছে।");return}const data=snap.val();const memberColors=Object.values(data.players||{}).map(p=>p.color);if(data.state){game=data.state;game.players=COLORS.filter(c=>memberColors.includes(c));if(!game.players.length)game.players=[myColor||"red"];if(game.turn>=game.players.length)game.turn=0;render();}});
+
+$("copy").onclick=async()=>{
+ try{
+  await navigator.clipboard.writeText(roomCode);
+  $("copy").textContent="কপি হয়েছে!";
+ }catch{
+  $("roomHint").textContent="রুম কোড হাতে কপি করো: "+roomCode;
+ }
+};
+
+$("start").onclick=async()=>{
+ if(!roomData||uid!==roomData.hostUid)return;
+
+ const ps=Object.entries(roomData.players||{}).sort((a,b)=>a[1].seat-b[1].seat);
+ if(ps.length!==roomData.maxPlayers)return;
+
+ const players=ps.map(([id,p])=>({uid:id,name:p.name,seat:p.seat}));
+ const g=newGame(players,false);
+
+ try{
+  await fb.set(dbref(`rooms/${roomCode}/game`),g);
+  await fb.update(dbref(`rooms/${roomCode}`),{status:"playing"});
+ }catch(e){
+  $("roomHint").textContent="শুরু করা যায়নি: "+e.message;
+ }
+};
+
+function watchGame(){
+ if(unGame)unGame();
+ unGame=fb.onValue(dbref(`rooms/${roomCode}/game`),s=>{
+  if(s.exists()){
+   gameData=s.val();
+   renderGame();
+  }
+ });
 }
-async function leaveRoom(){if(unsubscribe){unsubscribe();unsubscribe=null}roomCode=null;myColor=null;document.getElementById("roomStatus").textContent="লোকাল গেম মোড।";game=freshGame(+document.getElementById("playerCount").value);valid=[];render();setStatus("অনলাইন রুম ছেড়েছেন।");}
-document.getElementById("createRoom").addEventListener("click",createRoom);
-document.getElementById("joinRoom").addEventListener("click",joinRoom);
-document.getElementById("leaveRoom").addEventListener("click",leaveRoom);
+
+function trackIndex(p,progress){return (starts[p.seat]+progress)%52}
+function cellKey(r,c){return r+","+c}
+
+function canMove(t,d){
+ if(!t)return false;
+ if(t.progress===-1)return d===6;
+ return t.progress+d<=57;
+}
+
+function getCurrent(){return gameData?.players?.[gameData.turn]}
+
+function renderGame(){
+ if(!gameData)return;
+
+ const current=getCurrent();
+
+ $("turn").textContent=gameData.winner
+  ?("🏆 বিজয়ী: "+gameData.winner)
+  :("এখন চাল: "+(current?.name||""));
+
+ $("dice").textContent=["","⚀","⚁","⚂","⚃","⚄","⚅"][gameData.dice||1];
+
+ $("roll").disabled=!current||
+  (!gameData.local&&current.uid!==uid)||
+  gameData.phase!=="roll"||!!gameData.winner;
+
+ $("instruction").textContent=gameData.winner
+  ?"খেলা শেষ!"
+  :gameData.phase==="move"&&(gameData.local||current?.uid===uid)
+   ?`পাশায় ${gameData.dice} উঠেছে। নিজের বৈধ ঘুঁটি বেছে নাও।`
+   :"নিজের পালায় পাশা চালাও। ৬ উঠলে ঘুঁটি বের করা যায়।";
+
+ renderBoard();
+
+ $("gameStatus").textContent=gameData.winner
+  ?"খেলা শেষ!"
+  :(gameData.phase==="move"?"একটি বৈধ ঘুঁটি বেছে নাও।":"");
+
+ const choices=$("tokenChoices");
+ choices.innerHTML="";
+
+ if(current&&gameData.phase==="move"&&!gameData.winner&&
+   (gameData.local||current.uid===uid)){
+
+  (gameData.tokens[current.uid]||[]).forEach((t,i)=>{
+   if(canMove(t,gameData.dice)){
+    const b=document.createElement("button");
+    b.textContent=`${colorBn[current.seat]} ঘুঁটি ${i+1}`;
+    b.style.background=["#ef4444","#22c55e","#facc15","#3b82f6"][current.seat];
+    b.style.color=current.seat===2?"#111":"white";
+    b.onclick=()=>moveToken(i);
+    choices.appendChild(b);
+   }
+  });
+
+  if(!choices.children.length)
+   choices.textContent="এই পাশায় কোনো বৈধ চাল নেই।";
+ }
+}
+
+function renderBoard(){
+ const board=$("board");
+ board.innerHTML="";
+
+ const trackMap=new Map(track.map((p,i)=>[cellKey(...p),i]));
+ const laneMap=new Map();
+
+ lanes.forEach((lane,s)=>lane.forEach((p,i)=>
+  laneMap.set(cellKey(...p),{seat:s,i})
+ ));
+
+ const homes=[
+  {r0:0,r1:5,c0:0,c1:5,seat:0},
+  {r0:0,r1:5,c0:9,c1:14,seat:1},
+  {r0:9,r1:14,c0:9,c1:14,seat:2},
+  {r0:9,r1:14,c0:0,c1:5,seat:3}
+ ];
+
+ const tokenAt=new Map();
+
+ (gameData.players||[]).forEach(p=>
+  (gameData.tokens[p.uid]||[]).forEach((t,i)=>{
+   let pos;
+
+   if(t.progress===-1)pos=homeCells[p.seat][i];
+   else if(t.progress<=51)pos=track[trackIndex(p,t.progress)];
+   else if(t.progress<=56)pos=lanes[p.seat][t.progress-52];
+   else pos=[7,7];
+
+   const k=cellKey(...pos);
+   if(!tokenAt.has(k))tokenAt.set(k,[]);
+   tokenAt.get(k).push({p,i});
+  })
+ );
+
+ for(let r=0;r<15;r++){
+  for(let c=0;c<15;c++){
+   const cell=document.createElement("div");
+   const k=cellKey(r,c);
+   cell.className="cell empty";
+
+   const home=homes.find(h=>r>=h.r0&&r<=h.r1&&c>=h.c0&&c<=h.c1);
+   if(home)cell.className="cell "+colors[home.seat]+"home";
+
+   if(trackMap.has(k)){
+    cell.className="cell track";
+    if(safeSquares.includes(trackMap.get(k)))cell.classList.add("safe");
+   }
+
+   if(laneMap.has(k))cell.className="cell "+colors[laneMap.get(k).seat]+"lane";
+   if(r===7&&c===7){cell.className="cell center";cell.textContent="★"}
+
+   const pieces=tokenAt.get(k)||[];
+
+   if(pieces.length){
+    cell.textContent="";
+    cell.style.display="grid";
+    cell.style.gridTemplateColumns=pieces.length>1?"repeat(2,minmax(0,1fr))":"1fr";
+    cell.style.gridTemplateRows=pieces.length>2?"repeat(2,minmax(0,1fr))":"1fr";
+    cell.style.gap="1px";
+
+    pieces.slice(0,4).forEach(({p,i})=>{
+     const b=document.createElement("button");
+     b.className="token "+colors[p.seat]+(!gameData.local&&p.uid===uid?" mine":"");
+     b.textContent=String(i+1);
+     b.title=p.name+" ঘুঁটি "+(i+1);
+
+     const cur=getCurrent();
+     const isMyTurn=gameData.local||cur?.uid===uid;
+
+     b.disabled=!(p.uid===cur?.uid&&isMyTurn&&
+      gameData.phase==="move"&&
+      canMove(gameData.tokens[p.uid][i],gameData.dice));
+
+     b.onclick=()=>moveToken(i);
+     cell.appendChild(b);
+    });
+   }
+
+   board.appendChild(cell);
+  }
+ }
+}
+
+async function saveGame(g){
+ g.updatedAt=Date.now();
+ gameData=g;
+ renderGame();
+
+ if(!g.local){
+  try{
+   await fb.set(dbref(`rooms/${roomCode}/game`),g);
+  }catch(e){
+   $("gameStatus").textContent="চাল সেভ হয়নি: "+e.message;
+  }
+ }
+}
+
+async function moveToken(index){
+ if(!gameData||gameData.phase!=="move"||gameData.winner)return;
+
+ const current=getCurrent();
+ if(!gameData.local&&current?.uid!==uid)return;
+
+ const g=structuredClone(gameData);
+ const p=g.players[g.turn];
+ const t=g.tokens[p.uid][index];
+ const d=g.dice;
+
+ if(!canMove(t,d))return;
+
+ if(t.progress===-1)t.progress=0;
+ else t.progress+=d;
+
+ let captured=false;
+
+ if(t.progress<=51){
+  const landing=trackIndex(p,t.progress);
+
+  if(!safeSquares.includes(landing)){
+   for(const other of g.players){
+    if(other.uid===p.uid)continue;
+
+    (g.tokens[other.uid]||[]).forEach(ot=>{
+     if(ot.progress>=0&&ot.progress<=51&&
+       trackIndex(other,ot.progress)===landing){
+      ot.progress=-1;
+      captured=true;
+     }
+    });
+   }
+  }
+ }
+
+ if(g.tokens[p.uid].every(x=>x.progress===57)){
+  g.winner=p.name;
+  g.phase="finished";
+ }else{
+  g.turn=(d===6||captured)?g.turn:(g.turn+1)%g.players.length;
+  g.phase="roll";
+ }
+
+ await saveGame(g);
+}
+
+$("roll").onclick=async()=>{
+ if(!gameData||gameData.phase!=="roll"||gameData.winner)return;
+
+ const current=getCurrent();
+ if(!gameData.local&&current?.uid!==uid)return;
+
+ const g=structuredClone(gameData);
+ g.dice=Math.floor(Math.random()*6)+1;
+ g.phase="move";
+
+ const movable=(g.tokens[current.uid]||[]).some(t=>canMove(t,g.dice));
+
+ if(!movable){
+  g.phase="roll";
+  if(g.dice!==6)g.turn=(g.turn+1)%g.players.length;
+ }
+
+ await saveGame(g);
+};
+
+async function leaveRoom(){
+ if(mode==="online"&&roomCode&&uid&&fb){
+  const old=roomCode;
+
+  try{
+   if(unRoom)unRoom();
+   if(unGame)unGame();
+   unRoom=null;
+   unGame=null;
+
+   const s=await fb.get(dbref("rooms/"+old));
+
+   if(s.exists()){
+    const r=s.val();
+
+    if(r.hostUid===uid){
+     await fb.remove(dbref("rooms/"+old));
+    }else{
+     await fb.remove(dbref(`rooms/${old}/players/${uid}`));
+
+     if(r.status==="playing")
+      await fb.update(dbref("rooms/"+old),{status:"waiting"});
+    }
+   }
+  }catch(e){
+   $("gameStatus").textContent="রুম ছাড়ার সমস্যা: "+e.message;
+  }
+ }
+
+ roomCode="";
+ roomData=null;
+ gameData=null;
+
+ hide("room");
+ hide("game");
+ show("lobby");
+ show("offlineSetup");
+ hide("onlineSetup");
+ mode="offline";
+}
+
+$("leave").onclick=leaveRoom;
+$("exitGame").onclick=leaveRoom;
 </script>
-</body></html>
+</body>
+</html>export
